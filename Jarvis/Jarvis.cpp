@@ -4,30 +4,12 @@
 #include "stdafx.h"
 #include <vector>
 #include "Net.h"
+#include "Debuger.h"
 #include "TrainingData.h"
 #include <iostream>
 #include <cassert>
 #include <string>
 
-void showVectorVals(std::string label, std::vector<double> &v)
-{
-	//std::cout << " list " << v.size() << std::endl;
-	for (unsigned i = 0; i < v.size(); ++i) {
-		std::cout << v[i] << " ";
-	}
-
-	std::cout << std::endl;
-}
-
-void showVectorValsUnsigned(std::string label, std::vector<unsigned> &v)
-{
-	std::cout << " " + label << "  " << v.size() << std::endl;
-	for (unsigned i = 0; i < v.size(); ++i) {
-		std::cout << v[i] << " ";
-	}
-
-	std::cout << std::endl;
-}
 
 int main()
 {
@@ -37,43 +19,40 @@ int main()
 	// e.g., { 3, 2, 1 }
 	std::vector<unsigned> topology;
 	trainData.getTopology(topology);
-	showVectorValsUnsigned("topology:", topology);
+	Debuger::showVectorValsUnsigned("Topology", topology);
+
 	Net myNet(topology);
 	std::vector<double> inputVals, targetVals, resultVals;
-	int trainingPass = 0;
-
-	while (!trainData.isEof()) {
-		if (trainData.getNextInputs(inputVals) != topology[0]) {
-			break;
-		}
-		showVectorVals(": Inputs:", inputVals);
-	}
 	
-	int x;
-	std::cin >> x;
-	return 0;
+	int trainingPass = 0;
 
 	while (!trainData.isEof()) {
 
 		++trainingPass;
-		std::cout << std::endl << "Pass " << trainingPass;
+		std::cout << std::endl << "Pass" << trainingPass;
 
 		if (trainData.getNextInputs(inputVals) != topology[0]) {
-			break;
+			continue;
 		}
-		showVectorVals(": inputs:", inputVals);
+		//Debuger::showVectorValsDouble("Inputs", inputVals);
 		myNet.feedForward(inputVals);
 
 		myNet.getResoults(resultVals);
-		showVectorVals("outputs:", resultVals);
+		//Debuger::showVectorValsDouble("Outputs", resultVals);
+		for (unsigned i = 0; i < resultVals.size(); ++i) {
+			std::cout << " r:" << resultVals[i] << " ";
+		}
 
 		trainData.getTargetOutputs(targetVals);
-		showVectorVals("targets :", targetVals);
+		//Debuger::showVectorValsDouble("Targets", targetVals);
+		for (unsigned i = 0; i < targetVals.size(); ++i) {
+			std::cout << " t:" << targetVals[i] << " ";
+		}
+
 		assert(targetVals.size() == topology.back());
 		myNet.backProp(targetVals);
 
-		std::cout << "error: "
-			<< myNet.getRecentAverageError() << std::endl;
+		std::cout << " error: " << myNet.getRecentAverageError() << std::endl;
 	}
 
 	std::cout << std::endl << "done" << std::endl;
