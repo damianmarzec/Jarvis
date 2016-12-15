@@ -11,7 +11,7 @@ public:
 	Net(const std::vector<unsigned>& topology);
 	void feedForward(const std::vector<double>& inputVals);
 	void backProp(std::vector<double>& targetVals);
-	void getResoults(std::vector<double>& resoultVals) const;
+	void getResults(std::vector<double>& resoultVals) const;
 
 	double getRecentAverageError();
 

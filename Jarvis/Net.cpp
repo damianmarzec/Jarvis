@@ -109,13 +109,13 @@ void Net::backProp(std::vector<double>& targetVals)
 
 }
 
-void Net::getResoults(std::vector<double>& resultsVals) const
+void Net::getResults(std::vector<double>& resultsVals) const
 {
 	resultsVals.clear();
 
 	for (unsigned neuronNum = 0; neuronNum < layers.back().size() - 1; ++neuronNum) {
 
-		//std::cout << "init - " << neuronNum << std::endl;
+		std::cout << "init - " << neuronNum << std::endl;
 
 		resultsVals.push_back(layers.back()[neuronNum].getOutputValue());
 	}
